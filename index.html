@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>O Enfermeiro de Alta Performance — Módulo Microlearning</title>
+<title>Roda da Afinidade Profissional em Enfermagem — Módulo Microlearning</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -11,7 +11,6 @@
     --bg: #0E2233;
     --bg-deep: #091622;
     --elev: #16324A;
-    --elev-2: #1C3C58;
     --grid: #24445F;
     --ink: #EAF2F5;
     --ink-dim: #93AFC2;
@@ -27,8 +26,7 @@
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; }
   body{
-    background:
-      radial-gradient(ellipse at top, #123049 0%, var(--bg) 45%, var(--bg-deep) 100%);
+    background: radial-gradient(ellipse at top, #123049 0%, var(--bg) 45%, var(--bg-deep) 100%);
     color:var(--ink);
     font-family:'IBM Plex Sans', sans-serif;
     min-height:100vh;
@@ -37,13 +35,7 @@
     padding:28px 16px 60px;
   }
 
-  .app{
-    width:100%;
-    max-width:640px;
-    display:flex;
-    flex-direction:column;
-    gap:0;
-  }
+  .app{ width:100%; max-width:640px; display:flex; flex-direction:column; gap:0; }
 
   /* ---------- MONITOR HEADER ---------- */
   .monitor{
@@ -72,261 +64,178 @@
     flex-wrap:wrap; gap:6px;
   }
   .monitor-row b{ color:var(--pulse); font-weight:600; }
-  .vitals{
-    display:flex; align-items:center; gap:6px;
-    font-family:'IBM Plex Mono', monospace;
-    color:var(--ink);
-  }
+  .vitals{ display:flex; align-items:center; gap:6px; font-family:'IBM Plex Mono', monospace; color:var(--ink); }
   .vitals .num{ font-size:15px; font-weight:600; color:var(--gold); }
 
-  .ecg-strip{
-    position:relative; z-index:1;
-    display:flex; gap:3px; align-items:flex-end;
-    height:46px;
+  .brain-wrap{ position:relative; z-index:1; display:flex; justify-content:center; padding:2px 0 0; }
+  .brain-svg{ width:96px; height:80px; overflow:visible; }
+  #brainFill{ transition:fill 0.4s ease; }
+  #brainClipRect{ transition:y 0.5s ease, height 0.5s ease; }
+  .brain-pct{
+    position:relative; z-index:1; text-align:center; margin-top:2px;
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--ink-faint);
   }
-  .blip{
-    flex:1;
-    height:100%;
-    display:flex; align-items:center;
-    position:relative;
-  }
-  .blip svg{ width:100%; height:100%; overflow:visible; }
-  .blip path{
-    fill:none;
-    stroke:var(--ink-faint);
-    stroke-width:2;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:0.35;
-    transition:stroke 0.4s ease, opacity 0.4s ease;
-  }
-  .blip.correct path{ stroke:var(--pulse); opacity:1; filter:drop-shadow(0 0 4px rgba(95,217,164,0.6)); }
-  .blip.incorrect path{ stroke:var(--alert); opacity:1; filter:drop-shadow(0 0 4px rgba(255,139,102,0.55)); }
-  .blip.current path{ stroke:var(--ink); opacity:0.9; animation:sweep 1.6s ease-in-out infinite; }
-  @keyframes sweep{ 0%,100%{opacity:0.45;} 50%{opacity:1;} }
+  .brain-pct b{ color:var(--gold); }
 
   /* ---------- CARD ---------- */
   .card{
-    background:var(--elev);
-    border:1px solid var(--grid);
-    border-top:none;
+    background:var(--elev); border:1px solid var(--grid); border-top:none;
     border-radius:0 0 var(--radius) var(--radius);
-    padding:28px 24px 26px;
-    min-height:420px;
-    display:flex;
-    flex-direction:column;
+    padding:28px 24px 26px; min-height:440px; display:flex; flex-direction:column;
   }
 
   /* ---------- INTRO ---------- */
   .intro{ text-align:left; display:flex; flex-direction:column; gap:18px; flex:1; justify-content:center; }
   .intro .eyebrow{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
-    color:var(--pulse);
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--pulse);
   }
   .intro h1{
-    font-family:'Fraunces', serif;
-    font-size:clamp(28px, 6vw, 38px);
-    line-height:1.08;
-    font-weight:600;
-    margin:0;
-    color:var(--ink);
+    font-family:'Fraunces', serif; font-size:clamp(26px, 6vw, 34px);
+    line-height:1.1; font-weight:600; margin:0; color:var(--ink);
   }
-  .intro p{
-    color:var(--ink-dim);
-    font-size:15px;
-    line-height:1.6;
-    margin:0;
-    max-width:46ch;
-  }
+  .intro p{ color:var(--ink-dim); font-size:15px; line-height:1.6; margin:0; max-width:46ch; }
   .meta-row{
     display:flex; gap:18px; flex-wrap:wrap;
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px; color:var(--ink-faint);
-    border-top:1px solid var(--grid);
-    border-bottom:1px solid var(--grid);
-    padding:12px 0;
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-faint);
+    border-top:1px solid var(--grid); border-bottom:1px solid var(--grid); padding:12px 0;
   }
   .meta-row span b{ color:var(--ink-dim); font-weight:600; }
 
+  .field-group{ display:flex; flex-direction:column; gap:12px; }
+  .field-group label{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--ink-faint); margin-bottom:4px; display:block;
+  }
+  .field-group input{
+    width:100%; background:var(--bg-deep); border:1px solid var(--grid); border-radius:8px;
+    padding:11px 12px; font-family:'IBM Plex Sans', sans-serif; font-size:14px; color:var(--ink);
+    outline:none; transition:border-color 0.15s ease;
+  }
+  .field-group input:focus{ border-color:var(--pulse); }
+  .field-group input::placeholder{ color:var(--ink-faint); }
+
   /* ---------- QUESTION ---------- */
-  .q-wrap{ display:flex; flex-direction:column; gap:16px; flex:1; animation:fadeIn 0.4s ease; }
+  .q-wrap{ display:flex; flex-direction:column; gap:18px; flex:1; animation:fadeIn 0.4s ease; }
   @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
-
   .q-eyebrow{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
-    color:var(--ink-faint);
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--ink-faint);
   }
-  .q-title{
-    font-family:'Fraunces', serif;
-    font-size:22px; font-weight:600;
-    color:var(--ink);
-    margin:0;
-  }
-  .q-situation{
-    color:var(--ink-dim);
-    font-size:14.5px;
-    line-height:1.55;
-    margin:0;
-  }
+  .q-title{ font-family:'Fraunces', serif; font-size:20px; font-weight:600; color:var(--ink); margin:0; }
+  .q-situation{ color:var(--ink-dim); font-size:14.5px; line-height:1.55; margin:0; }
 
-  .options{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:4px;
+  /* ---------- 0-10 GRAPH SCALE ---------- */
+  .scale-wrap{ margin-top:6px; }
+  .scale{ display:flex; align-items:flex-end; gap:6px; height:100px; }
+  .bar{
+    flex:1; background:var(--bg-deep); border:1px solid var(--grid);
+    border-radius:4px 4px 0 0; cursor:pointer;
+    transition:background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
   }
-  @media (max-width:480px){ .options{ grid-template-columns:1fr; } }
+  .bar:hover{ border-color:var(--pulse-dim); transform:translateY(-1px); }
+  .bar.filled.low{ background:var(--alert); border-color:var(--alert); }
+  .bar.filled.mid{ background:var(--gold); border-color:var(--gold); }
+  .bar.filled.high{ background:var(--pulse); border-color:var(--pulse); }
+  .scale-labels{ display:flex; gap:6px; margin-top:6px; }
+  .scale-labels span{
+    flex:1; text-align:center; font-family:'IBM Plex Mono', monospace;
+    font-size:11px; color:var(--ink-faint);
+  }
+  .scale-readout{
+    font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--ink-dim);
+    margin-top:10px;
+  }
+  .scale-readout b{ color:var(--gold); font-size:16px; }
 
-  .opt{
-    background:var(--bg-deep);
-    border:1px solid var(--grid);
-    border-radius:10px;
-    padding:16px 14px;
-    text-align:left;
-    color:var(--ink);
-    font-family:'IBM Plex Sans', sans-serif;
-    font-size:14px;
-    line-height:1.45;
-    cursor:pointer;
-    display:flex;
-    gap:10px;
-    align-items:flex-start;
-    transition:border-color 0.2s ease, transform 0.15s ease, background 0.2s ease;
+  .situ-box{
+    background:var(--bg-deep); border:1px solid var(--grid); border-radius:10px;
+    padding:12px 14px; font-size:13.5px; color:var(--ink-dim); line-height:1.55;
   }
-  .opt:hover:not(:disabled){ border-color:var(--pulse-dim); transform:translateY(-1px); }
-  .opt:disabled{ cursor:default; }
-  .opt .tag{
-    font-family:'IBM Plex Mono', monospace;
-    font-weight:600;
-    font-size:12px;
-    color:var(--ink-faint);
-    flex-shrink:0;
-    border:1px solid var(--grid);
-    border-radius:5px;
-    width:22px; height:22px;
-    display:flex; align-items:center; justify-content:center;
+  .situ-box b{ color:var(--pulse); display:block; margin-bottom:4px; font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; }
+  .opt-list{ display:flex; flex-direction:column; gap:9px; }
+  .opt-btn{
+    text-align:left; background:var(--bg-deep); border:1px solid var(--grid); border-radius:10px;
+    padding:12px 14px; font-family:'IBM Plex Sans', sans-serif; font-size:13.5px; color:var(--ink-dim);
+    line-height:1.5; cursor:pointer; transition:border-color 0.15s ease, background 0.15s ease;
   }
-  .opt.chosen-correct{ border-color:var(--pulse); background:linear-gradient(180deg, rgba(95,217,164,0.10), transparent); }
-  .opt.chosen-correct .tag{ background:var(--pulse); color:var(--bg-deep); border-color:var(--pulse); }
-  .opt.chosen-incorrect{ border-color:var(--alert); background:linear-gradient(180deg, rgba(255,139,102,0.10), transparent); }
-  .opt.chosen-incorrect .tag{ background:var(--alert); color:var(--bg-deep); border-color:var(--alert); }
-  .opt.reveal-correct:not(.chosen-correct){ border-color:var(--pulse-dim); opacity:0.75; }
+  .opt-btn:hover{ border-color:var(--pulse-dim); }
+  .opt-btn.selected.low{ border-color:var(--alert); background:rgba(255,139,102,0.08); color:var(--ink); }
+  .opt-btn.selected.mid{ border-color:var(--gold); background:rgba(232,185,92,0.08); color:var(--ink); }
+  .opt-btn.selected.high{ border-color:var(--pulse); background:rgba(95,217,164,0.08); color:var(--ink); }
 
-  .feedback{
-    margin-top:2px;
-    padding:14px 16px;
-    border-radius:10px;
-    font-size:13.5px;
-    line-height:1.55;
-    display:none;
-    animation:slideDown 0.35s ease;
-  }
-  @keyframes slideDown{ from{opacity:0; transform:translateY(-6px);} to{opacity:1; transform:translateY(0);} }
-  .feedback.show{ display:block; }
-  .feedback.pos{ background:rgba(95,217,164,0.09); border:1px solid var(--pulse-dim); color:#CDEFDF; }
-  .feedback.neg{ background:rgba(255,139,102,0.09); border:1px solid var(--alert-dim); color:#FFDCCB; }
-  .feedback b{ font-family:'IBM Plex Mono', monospace; letter-spacing:0.04em; }
+  .nav-row{ margin-top:auto; padding-top:18px; display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
 
-  .nav-row{
-    margin-top:auto;
-    padding-top:18px;
-    display:flex;
-    justify-content:flex-end;
+  .btn-insta{
+    background:linear-gradient(45deg,#F58529,#DD2A7B 45%,#8134AF 75%,#515BD4);
+    color:#fff;
   }
+  .btn-whats{ background:#25D366; color:#0B2B18; }
+
+  .share-hint{
+    background:var(--bg-deep); border:1px solid var(--grid); border-radius:10px;
+    padding:12px 14px; font-size:13px; color:var(--ink-dim); line-height:1.55;
+  }
+  .share-hint b{ color:var(--pulse); }
+  .caption-box{
+    display:flex; align-items:center; gap:8px; margin-top:8px;
+    background:var(--elev); border:1px dashed var(--grid); border-radius:8px; padding:8px 10px;
+  }
+  .caption-box span{ flex:1; font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-dim); }
+  .copy-btn{
+    background:transparent; border:1px solid var(--grid); color:var(--ink-dim);
+    border-radius:6px; padding:5px 9px; font-size:11px; font-family:'IBM Plex Mono', monospace;
+    cursor:pointer; flex-shrink:0; transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .copy-btn:hover{ border-color:var(--pulse); color:var(--pulse); }
 
   .btn{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:13px; letter-spacing:0.05em; text-transform:uppercase;
-    font-weight:600;
-    background:var(--pulse);
-    color:var(--bg-deep);
-    border:none;
-    border-radius:8px;
-    padding:12px 22px;
-    cursor:pointer;
+    font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:0.05em;
+    text-transform:uppercase; font-weight:600; background:var(--pulse); color:var(--bg-deep);
+    border:none; border-radius:8px; padding:12px 22px; cursor:pointer;
     transition:filter 0.15s ease, transform 0.15s ease;
   }
   .btn:hover{ filter:brightness(1.08); transform:translateY(-1px); }
-  .btn.ghost{
-    background:transparent;
-    color:var(--ink-dim);
-    border:1px solid var(--grid);
-  }
+  .btn.ghost{ background:transparent; color:var(--ink-dim); border:1px solid var(--grid); }
   .btn:disabled{ opacity:0.35; cursor:not-allowed; transform:none; }
 
   /* ---------- RESULT ---------- */
-  .result{ display:flex; flex-direction:column; gap:20px; flex:1; animation:fadeIn 0.5s ease; }
+  .result{ display:flex; flex-direction:column; gap:18px; flex:1; animation:fadeIn 0.5s ease; }
   .result-head{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
-    color:var(--ink-faint);
-    border-bottom:1px dashed var(--grid);
-    padding-bottom:14px;
-    display:flex; justify-content:space-between;
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--ink-faint); border-bottom:1px dashed var(--grid);
+    padding-bottom:14px; display:flex; justify-content:space-between;
   }
-  .result-score{
-    display:flex; align-items:baseline; gap:14px;
-  }
-  .result-score .big{
-    font-family:'Fraunces', serif;
-    font-size:64px; font-weight:700;
-    color:var(--gold);
-    line-height:1;
-  }
-  .result-score .of{
-    font-family:'IBM Plex Mono', monospace;
-    color:var(--ink-faint);
-    font-size:14px;
-  }
-  .profile-name{
-    font-family:'Fraunces', serif;
-    font-size:24px; font-weight:600;
-    color:var(--ink);
-    margin:0;
-  }
-  .profile-next{
-    color:var(--ink-dim);
-    font-size:14.5px;
-    line-height:1.6;
-    margin:0;
-    background:var(--bg-deep);
-    border-left:3px solid var(--gold);
-    padding:14px 16px;
-    border-radius:0 8px 8px 0;
-  }
-  .review-list{
-    display:flex; flex-direction:column; gap:6px;
-    max-height:0; overflow:hidden; transition:max-height 0.4s ease;
-  }
-  .review-list.open{ max-height:900px; }
-  .review-item{
-    display:flex; gap:10px; align-items:flex-start;
-    font-size:12.5px; color:var(--ink-faint);
-    font-family:'IBM Plex Mono', monospace;
-    padding:6px 0;
-    border-bottom:1px solid var(--grid);
-  }
-  .review-item .dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
-  .review-item.ok .dot{ background:var(--pulse); }
-  .review-item.no .dot{ background:var(--alert); }
-  .review-item span.txt{ color:var(--ink-dim); font-family:'IBM Plex Sans', sans-serif; }
+  .profile-name{ font-family:'Fraunces', serif; font-size:22px; font-weight:600; color:var(--ink); margin:0; }
 
-  .toggle-review{
-    background:none; border:none; color:var(--ink-faint);
-    font-family:'IBM Plex Mono', monospace; font-size:12px;
-    text-decoration:underline; cursor:pointer; text-align:left; padding:0;
-    width:fit-content;
+  .area-chart{ display:flex; flex-direction:column; gap:10px; }
+  .area-row{ display:flex; align-items:center; gap:10px; }
+  .area-label{ width:110px; flex-shrink:0; font-size:13px; color:var(--ink-dim); }
+  .area-track{ flex:1; background:var(--bg-deep); border:1px solid var(--grid); border-radius:6px; height:16px; overflow:hidden; }
+  .area-track .fill{ height:100%; border-radius:5px; }
+  .area-value{ width:34px; text-align:right; font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--ink); flex-shrink:0; }
+  .area-row.top .area-label{ color:var(--gold); font-weight:600; }
+
+  .wheel-wrap{ display:flex; justify-content:center; padding:6px 0 2px; }
+  .wheel-svg{ width:100%; max-width:280px; height:auto; }
+  .wheel-legend{ display:flex; flex-wrap:wrap; gap:10px 16px; justify-content:center; margin-top:4px; }
+  .wheel-legend-item{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ink-dim); font-family:'IBM Plex Mono', monospace; }
+  .wheel-legend-dot{ width:9px; height:9px; border-radius:2px; flex-shrink:0; }
+
+  .profile-next{
+    color:var(--ink-dim); font-size:14.5px; line-height:1.6; margin:0;
+    background:var(--bg-deep); border-left:3px solid var(--gold); padding:14px 16px; border-radius:0 8px 8px 0;
+  }
+  .xp-badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono', monospace; font-size:12px; font-weight:600;
+    color:var(--gold); background:rgba(232,185,92,0.1); border:1px solid rgba(232,185,92,0.35);
+    border-radius:999px; padding:6px 12px; width:fit-content;
   }
 
   .foot{
-    text-align:center;
-    color:var(--ink-faint);
-    font-family:'IBM Plex Mono', monospace;
-    font-size:11px;
-    margin-top:14px;
-    letter-spacing:0.05em;
+    text-align:center; color:var(--ink-faint); font-family:'IBM Plex Mono', monospace;
+    font-size:11px; margin-top:14px; letter-spacing:0.05em;
   }
 </style>
 </head>
@@ -335,329 +244,645 @@
 <div class="app">
   <div class="monitor" id="monitor">
     <div class="monitor-row">
-      <span>Registro <b id="mCurrent">00</b> / 15</span>
-      <div class="vitals">Pulso clínico <span class="num" id="mBpm">60</span> bpm</div>
+      <span>Registro <b id="mCurrent">00</b> / <span id="mTotal">25</span></span>
+      <div class="vitals">Afinidade média <span class="num" id="mAvg">—</span></div>
     </div>
-    <div class="ecg-strip" id="ecgStrip"></div>
+    <div class="brain-wrap">
+      <svg class="brain-svg" viewBox="0 0 200 160">
+        <defs>
+          <clipPath id="brainClip">
+            <rect id="brainClipRect" x="0" y="160" width="200" height="0"></rect>
+          </clipPath>
+        </defs>
+        <path id="brainOutline"
+          d="M100,10 C70,10 42,24 32,48 C16,53 9,74 20,89 C9,100 14,121 35,131 C31,146 56,156 80,150 C90,158 110,158 120,150 C144,156 169,146 165,131 C186,121 191,100 180,89 C191,74 184,53 168,48 C158,24 130,10 100,10 Z"
+          fill="none" stroke="var(--grid)" stroke-width="3"></path>
+        <path id="brainFill"
+          d="M100,10 C70,10 42,24 32,48 C16,53 9,74 20,89 C9,100 14,121 35,131 C31,146 56,156 80,150 C90,158 110,158 120,150 C144,156 169,146 165,131 C186,121 191,100 180,89 C191,74 184,53 168,48 C158,24 130,10 100,10 Z"
+          fill="var(--pulse)" clip-path="url(#brainClip)"></path>
+        <path d="M100,15 C93,45 108,65 97,90 C110,112 92,130 100,150" fill="none" stroke="var(--bg-deep)" stroke-width="2.5" opacity="0.55"></path>
+        <path d="M45,55 C55,60 58,70 50,78 M150,55 C140,60 137,70 145,78" fill="none" stroke="var(--bg-deep)" stroke-width="2" opacity="0.4"></path>
+        <path d="M40,95 C52,98 56,108 48,116 M155,95 C143,98 139,108 147,116" fill="none" stroke="var(--bg-deep)" stroke-width="2" opacity="0.4"></path>
+      </svg>
+    </div>
+    <div class="brain-pct" id="brainPct">Progresso <b>0%</b></div>
   </div>
 
   <div class="card" id="card"></div>
 
-  <div class="foot">MICROLEARNING · GESTÃO E LIDERANÇA CLÍNICA</div>
+  <div class="foot">MICROLEARNING · RODA DA AFINIDADE PROFISSIONAL EM ENFERMAGEM</div>
 </div>
 
 <script>
 const QUESTIONS = [
-  { eyebrow:"Tela 1 · Propósito na Assistência",
-    title:"O Propósito na Assistência",
-    situation:"O profissional de alta performance tem clareza da sua contribuição. Como você enxerga o seu impacto para a organização e para a saúde dos pacientes?",
-    a:"Tenho o meu propósito e as metas de contribuição que desejo realizar no setor definidos por escrito.",
-    b:"Sei que contribuo salvando vidas, mas tenho isso apenas na cabeça; foco mais em resolver as urgências do plantão.",
-    correct:"a",
-    fbA:"Excelente! A clareza documentada garante que você não perca o direcionamento estratégico, mesmo nos dias mais caóticos.",
-    fbB:"O foco exclusivo na urgência transforma você num \"apagador de incêndios\"." },
+  { area:"hd", areaLabel:"Hemodiálise", color:"#E28F6E", block:"1/3",
+    prompt:"Quanto você se sente motivado a trabalhar em um setor especializado, com técnicas avançadas e procedimentos de alta complexidade e rotina frequente?" },
+  { area:"hd", areaLabel:"Hemodiálise", color:"#E28F6E", block:"2/3",
+    prompt:"Quão confortável você se sente em lidar com os equipamentos e em monitorar os parâmetros durante as sessões de tratamento?" },
+  { area:"hd", areaLabel:"Hemodiálise", color:"#E28F6E", block:"3/3",
+    prompt:"Qual seu interesse em acompanhar a evolução de pacientes crônicos ao longo de tratamentos prolongados?" },
+  { area:"hd", areaLabel:"Hemodiálise", color:"#E28F6E", block:"Cenário", type:"situational",
+    situacao:"Durante a primeira sessão de tratamento, o paciente apresenta queda brusca de pressão, queixa-se de tontura, náusea e está visivelmente ansioso e com medo.",
+    questao:"Qual seria a sua abordagem imediata para estabilizar o quadro clínico do paciente e, ao mesmo tempo, tranquilizá-lo?",
+    options:[
+      { text:"Ignoro a queixa, foco só no maquinário ou desconsidero o medo do paciente.", score:2 },
+      { text:"Sigo o protocolo mecânico (ajusto a máquina), mas não comunico nada ao paciente — ajo com frieza.", score:5.5 },
+      { text:"Ajo rápido no clínico (interrompo a ultrafiltração, ajusto o fluxo, Trendelenburg, aviso o médico) e converso com calma, explicando o que está acontecendo.", score:9 }
+    ] },
 
-  { eyebrow:"Tela 2 · O Plano de Voo (Carreira)",
-    title:"O Plano de Voo",
-    situation:"Onde você deseja morar, qual a renda desejada e que tipo de especialização quer ter?",
-    a:"Deixo a rotina me guiar. O importante é ter o emprego e dar conta da escala.",
-    b:"Tenho um plano de carreira detalhado e escrito, mapeando onde estou e onde quero chegar na enfermagem.",
-    correct:"b",
-    fbA:"Sem uma visão de futuro, a estagnação profissional é quase certa.",
-    fbB:"Visão de mestre! Quem não planeja o seu próprio cenário, acaba fazendo parte do cenário dos outros." },
+  { area:"uti", areaLabel:"UTI", color:"#5FD9A4", block:"1/3",
+    prompt:"Quanto você se sente motivado a trabalhar em um ambiente de alta intensidade, lidando com tecnologia de ponta e monitoramento constante?" },
+  { area:"uti", areaLabel:"UTI", color:"#5FD9A4", block:"2/3",
+    prompt:"Quão confortável você se sente em gerenciar situações de emergência com risco de vida e tomar decisões rápidas?" },
+  { area:"uti", areaLabel:"UTI", color:"#5FD9A4", block:"3/3",
+    prompt:"Qual seu interesse em integrar uma equipe multidisciplinar para o cuidado de pacientes críticos?" },
+  { area:"uti", areaLabel:"UTI", color:"#5FD9A4", block:"Cenário", type:"situational",
+    situacao:"Durante o plantão, o familiar de um paciente grave no leito ao lado está muito alterado, chorando alto e exigindo informações médicas de forma ríspida — e você está preparando uma medicação de alta vigilância para o seu paciente.",
+    questao:"Como você gerencia a crise emocional desse familiar sem comprometer a segurança e a dupla checagem da medicação crítica que está preparando?",
+    options:[
+      { text:"Largo a medicação de qualquer jeito ou discuto com o familiar exigindo silêncio.", score:2 },
+      { text:"Peço para o familiar se acalmar de longe, mas não resolvo — a agitação continua.", score:5.5 },
+      { text:"Mantenho a barreira de segurança no preparo, valido a dor do familiar com calma e acciono o enfermeiro líder/colega para acolhê-lo.", score:9 }
+    ] },
 
-  { eyebrow:"Tela 3 · Metas de Curto Prazo",
-    title:"Metas de Curto Prazo",
-    situation:"Em relação aos objetivos para a sua unidade e para você no próximo ano:",
-    a:"Sei que precisamos melhorar processos, mas não tenho nenhuma meta formalizada para os próximos 12 meses.",
-    b:"Tenho metas claras e registradas (ex: reduzir infecções em 10%, concluir a pós-graduação).",
-    correct:"b",
-    fbA:"Ficar apenas no campo das ideias não gera mudança.",
-    fbB:"Isso é foco! Metas escritas e com prazo são o motor da alta performance." },
+  { area:"emg", areaLabel:"Emergência", color:"#6FB3E0", block:"1/3",
+    prompt:"Quanto você se sente motivado a lidar com a imprevisibilidade e a rapidez dos atendimentos em um pronto-socorro?" },
+  { area:"emg", areaLabel:"Emergência", color:"#6FB3E0", block:"2/3",
+    prompt:"Quão confortável você se sente em realizar procedimentos de urgência, como reanimação ou imobilização, sob pressão?" },
+  { area:"emg", areaLabel:"Emergência", color:"#6FB3E0", block:"3/3",
+    prompt:"Qual seu interesse em trabalhar em um ambiente hospitalar de alta volatilidade e com demandas variadas?" },
+  { area:"emg", areaLabel:"Emergência", color:"#6FB3E0", block:"Cenário", type:"situational",
+    situacao:"O PS está superlotado. Um paciente classificado como 'Amarelo' chama queixando-se que a dor no peito piorou, com suor frio e palidez — e a equipe médica está ocupada com uma parada cardíaca na sala vermelha.",
+    questao:"Diante da indisponibilidade médica imediata, qual é o seu raciocínio clínico e atitude frente a essa mudança de quadro?",
+    options:[
+      { text:"Peço para o paciente aguardar ser chamado pelo painel, sem perceber os sinais de alerta.", score:2 },
+      { text:"Verifico os sinais vitais, anoto e fico esperando o médico desocupar, sem tomar iniciativa.", score:5.5 },
+      { text:"Identifico o risco de infarto, faço o ECG em poucos minutos, monitoro e levo o resultado até a sala vermelha para reclassificar a prioridade.", score:9 }
+    ] },
 
-  { eyebrow:"Tela 4 · Melhoria Contínua",
-    title:"Melhoria Contínua",
-    situation:"Os pacientes e a gestão hospitalar apresentam novas necessidades. Como você adapta o seu trabalho?",
-    a:"Mudo as minhas atitudes e otimizo os processos do setor para entregar uma assistência mais segura e satisfatória.",
-    b:"Continuo fazendo o meu trabalho da forma que sempre fiz, até que a coordenação exija uma mudança.",
-    correct:"a",
-    fbA:"Empatia e proatividade! Você entende que a assistência deve evoluir conforme a necessidade de quem a recebe.",
-    fbB:"A postura reativa engessa o setor e ignora a experiência do paciente." },
+  { area:"hc", areaLabel:"Home Care", color:"#9FCB6B", block:"1/3",
+    prompt:"Quanto você se sente motivado a prestar assistência em domicílio, com foco na autonomia e na valorização do vínculo com a família?" },
+  { area:"hc", areaLabel:"Home Care", color:"#9FCB6B", block:"2/3",
+    prompt:"Quão confortável você se sente em gerenciar o próprio tempo e tomar decisões clínicas de forma independente no ambiente doméstico?" },
+  { area:"hc", areaLabel:"Home Care", color:"#9FCB6B", block:"3/3",
+    prompt:"Qual seu interesse em participar de planos de reabilitação multidisciplinar e centrados no contexto familiar?" },
+  { area:"hc", areaLabel:"Home Care", color:"#9FCB6B", block:"Cenário", type:"situational",
+    situacao:"Ao chegar para o plantão, você percebe que o cuidador familiar está exausto, irritado, fez uma troca de fralda incorreta (risco de lesão por pressão) e descarrega a frustração criticando a equipe de enfermagem.",
+    questao:"Como você corrige a falha técnica na higiene e restabelece uma boa relação com esse familiar, mantendo o ambiente seguro no domicílio?",
+    options:[
+      { text:"Levo a reclamação para o lado pessoal e critico diretamente a higiene malfeita, gerando hostilidade.", score:2 },
+      { text:"Fico em silêncio, refaço sozinho, mas não oriento o familiar.", score:5.5 },
+      { text:"Acolho o cansaço do familiar, refaço com técnica impecável e, num momento mais calmo, oriento gentilmente sobre boas práticas.", score:9 }
+    ] },
 
-  { eyebrow:"Tela 5 · Comunicação Multidisciplinar",
-    title:"Comunicação Multidisciplinar",
-    situation:"Durante a passagem de plantão ou num round clínico com os médicos:",
-    a:"Exponho meu diagnóstico de enfermagem com firmeza, mas escuto ativamente as contribuições dos colegas.",
-    b:"Falo mais do que ouço para impor a rotina, ou evito expor as minhas ideias para não gerar discordância.",
-    correct:"a",
-    fbA:"Comunicação assertiva! O equilíbrio perfeito para construir confiança na equipe multidisciplinar.",
-    fbB:"Os extremos (agressividade ou passividade) quebram a segurança do paciente." },
+  { area:"atz", areaLabel:"Atualização", color:"#E8B95C", block:"1/4",
+    prompt:"Quanto você se sente motivado a buscar constantemente novos conhecimentos e cursos para manter suas práticas alinhadas com o mercado?" },
+  { area:"atz", areaLabel:"Atualização", color:"#E8B95C", block:"2/4",
+    prompt:"Quão confortável você se sente em se adaptar a novos protocolos de segurança e assistência com agilidade?" },
+  { area:"atz", areaLabel:"Atualização", color:"#E8B95C", block:"3/4",
+    prompt:"Qual seu interesse em investir em sua capacitação pessoal e profissional para se manter competitivo?" },
+  { area:"atz", areaLabel:"Atualização", color:"#E8B95C", block:"4/4", isContext:true,
+    prompt:"De 0 a 10, sendo 0 para quem se formou muito recentemente e 10 para quem se formou há bastante tempo, como você avaliaria o tempo decorrido desde a sua formação? (não entra na média de afinidade)" },
+  { area:"atz", areaLabel:"Atualização", color:"#E8B95C", block:"Cenário", type:"situational",
+    situacao:"O hospital atualizou um protocolo crítico ou trocou o modelo de bomba de infusão/prontuário eletrônico. Você precisa agir rápido numa medicação urgente, mas não domina a nova tecnologia — mesmo tendo anos de experiência.",
+    questao:"Como você lida com essa urgência diante de uma tecnologia ou protocolo novo, considerando que sua forma antiga de trabalhar não se aplica mais?",
+    options:[
+      { text:"Tento por tentativa e erro, ou critico a mudança na frente da equipe.", score:2 },
+      { text:"Reconheço que não sei, mas delego a tarefa a um colega sem aprender.", score:5.5 },
+      { text:"Chamo o líder ou colega capacitado para ajustar comigo, aprendendo no momento com foco na segurança.", score:9 }
+    ] },
 
-  { eyebrow:"Tela 6 · Educação Continuada",
-    title:"Educação Continuada",
-    situation:"A ciência da saúde avança rapidamente. Como é a sua busca por novos conhecimentos?",
-    a:"Tenho períodos programados na minha rotina (dia/ano) para estudar, ler artigos científicos e fazer cursos.",
-    b:"Leio e busco me atualizar apenas quando sobra algum tempo livre no hospital ou em casa.",
-    correct:"a",
-    fbA:"Hábito de excelência. A atualização intencional mantém você como referência técnica.",
-    fbB:"A \"falta de tempo\" é o maior inimigo da inovação. O que não é priorizado na agenda, não acontece." },
-
-  { eyebrow:"Tela 7 · Prática Baseada em Evidências",
-    title:"Prática Baseada em Evidências",
-    situation:"Você aprendeu um novo protocolo assistencial em um congresso. Qual o próximo passo?",
-    a:"Só aplico quando tenho 100% de certeza que não haverá resistência, ou prefiro não testar.",
-    b:"Coloco o novo conhecimento em prática, verifico os resultados com a equipe e identifico o que funciona ou não.",
-    correct:"b",
-    fbA:"O excesso de cautela e a aversão ao risco paralisam a evolução da unidade.",
-    fbB:"Mentalidade científica pura! Testar, errar rápido e ajustar é a base da inovação em saúde." },
-
-  { eyebrow:"Tela 8 · A Arte de Reger a Equipe",
-    title:"A Arte de Reger a Equipe",
-    situation:"É preciso alinhar técnicos de enfermagem desmotivados em prol de um novo objetivo de qualidade.",
-    a:"Sinto-me realizado ao tomar a iniciativa para alinhar ideias, mediar conflitos e guiar a equipe na mesma direção.",
-    b:"Tenho receio de cobrar posturas e gerar atritos, preferindo focar apenas no meu trabalho burocrático.",
-    correct:"a",
-    fbA:"O verdadeiro Enfermeiro Líder! Você assume o seu papel de maestro da assistência.",
-    fbB:"Abdicar da liderança sobrecarrega você e deixa a equipe à deriva." },
-
-  { eyebrow:"Tela 9 · Resiliência no Cuidado",
-    title:"Resiliência no Cuidado",
-    situation:"A realização de um objetivo crítico do setor está exigindo muito mais esforço do que o previsto.",
-    a:"Esforço-me a cada momento, adaptando estratégias e treinando a equipe até garantir o resultado.",
-    b:"Se a ação for muito difícil ou encontrar muita barreira na equipe, mudo de objetivo ou deixo para lá.",
-    correct:"a",
-    fbA:"Alta Performance exige garra. Você não espera que a cultura de segurança caia do céu.",
-    fbB:"A falta de resiliência impede que barreiras institucionais sejam rompidas." },
-
-  { eyebrow:"Tela 10 · O Mapa do Cuidado (SAE)",
-    title:"O Mapa do Cuidado",
-    situation:"Como você assegura a execução do planejamento terapêutico do seu paciente?",
-    a:"Utilizo a SAE documentada como um autêntico plano de ações para guiar toda a equipe técnica de forma sistêmica.",
-    b:"Sei o que deve ser feito, mas guardo na cabeça ou passo apenas verbalmente pela falta de tempo.",
-    correct:"a",
-    fbA:"Planejamento tático impecável! Transformar intenção em registros salva vidas.",
-    fbB:"Confiar na memória é o primeiro passo para o erro ou a omissão de cuidado." },
-
-  { eyebrow:"Tela 11 · Cultura de Feedback",
-    title:"Cultura de Feedback",
-    situation:"Como você avalia a eficácia do seu trabalho e liderança?",
-    a:"Busco informações ativamente sobre a minha atuação por meios formais (indicadores) e informais (feedback da equipe).",
-    b:"Acredito na minha intuição ou espero que os outros venham me dizer algo de forma espontânea.",
-    correct:"a",
-    fbA:"Maturidade profissional. Você caça os seus próprios pontos cegos.",
-    fbB:"Quem espera por feedback espontâneo geralmente só o recebe quando a situação já virou uma crise." },
-
-  { eyebrow:"Tela 12 · O Raio-X dos Dados",
-    title:"O Raio-X dos Dados",
-    situation:"Como você acompanha as metas (ex: lesões por pressão, absenteísmo) do seu plantão?",
-    a:"Considero os números burocracia; sei que o trabalho foi bem feito se ninguém reclamou e todos foram medicados.",
-    b:"Registro e quantifico os resultados em números e indicadores, usando metas numéricas para balizar o cuidado.",
-    correct:"b",
-    fbA:"\"Feeling\" não gere hospital. O que não se mede, não se gerencia.",
-    fbB:"O olhar do gestor! Você transforma dados assistenciais em inteligência clínica." },
-
-  { eyebrow:"Tela 13 · Auditoria Clínica",
-    title:"Auditoria Clínica",
-    situation:"Ao analisar o desempenho mensal do seu setor:",
-    a:"Sempre comparo o trabalho realizado com os objetivos e metas de qualidade institucionais.",
-    b:"Raramente comparo resultados; acho que cada plantão é único e comparações não ajudam.",
-    correct:"a",
-    fbA:"Auditoria contínua! Você garante que o esforço da equipe está alinhado com o sucesso do hospital.",
-    fbB:"Sem padronização e comparação de métricas, a qualidade da assistência se perde." },
-
-  { eyebrow:"Tela 14 · Agilidade de Correção",
-    title:"Agilidade de Correção (Pivotagem)",
-    situation:"Você implementou uma rotina, mas os resultados mostraram-se ruins ou a equipe está falhando.",
-    a:"Modifico rapidamente a atitude, revejo o processo e busco alternativas melhores sem apego ao erro.",
-    b:"Fico frustrado, justifico a falha por falta de recursos e reluto em mudar a rotina imediatamente.",
-    correct:"a",
-    fbA:"Agilidade estratégica. Alta performance é errar, admitir, corrigir a rota e seguir em frente.",
-    fbB:"A paralisia diante do erro perpetua falhas na segurança do paciente." },
-
-  { eyebrow:"Tela 15 · O Balanço Final",
-    title:"O Balanço Final",
-    situation:"Avaliando a efetividade da sua carreira e projetos até aqui:",
-    a:"Normalmente realizo todos ou a grande maioria dos objetivos que me proponho em um determinado período.",
-    b:"Noto que a maioria das minhas propostas e objetivos não saem do papel ou ficam pela metade.",
-    correct:"a",
-    fbA:"Capacidade máxima de entrega! Você fecha ciclos com sucesso e gera impacto real.",
-    fbB:"Há um gap forte entre a sua intenção clínica e a sua capacidade de execução/gestão de tempo." },
+  { area:"prep", areaLabel:"Preparatório", color:"#A79BE0", block:"1/3",
+    prompt:"Quanto você se sente motivado a participar de programas de simulação e treinamento prático para ingressar no mercado de trabalho com segurança?" },
+  { area:"prep", areaLabel:"Preparatório", color:"#A79BE0", block:"2/3",
+    prompt:"Quão confortável você se sente em compreender as exigências de postura, ética e comunicação exigidas no ambiente de trabalho?" },
+  { area:"prep", areaLabel:"Preparatório", color:"#A79BE0", block:"3/3",
+    prompt:"Qual seu interesse na elaboração de um plano de carreira estruturado para alcançar seus objetivos profissionais?" },
+  { area:"prep", areaLabel:"Preparatório", color:"#A79BE0", block:"Cenário", type:"situational",
+    situacao:"Você está no primeiro mês em um hospital de alta exigência. O médico plantonista pede um procedimento que você domina na teoria, mas nunca fez sozinho na prática.",
+    questao:"Como você se posiciona nesse momento para garantir a segurança do paciente e mostrar postura profissional?",
+    options:[
+      { text:"Tento fazer sozinho por medo de ser julgado, escondendo a falta de prática.", score:2 },
+      { text:"Travo, digo que nunca fiz e me afasto do leito.", score:5.5 },
+      { text:"Informo claramente meu domínio teórico e aciono o supervisor para validar a técnica, participando ativamente sob orientação.", score:9 }
+    ] },
 ];
 
-let step = -1; // -1 = intro, 0..14 = questions, 15 = result
-let answers = new Array(QUESTIONS.length).fill(null); // {letter, correct}
+const AREA_ORDER = [
+  { key:"hd", label:"Hemodiálise", color:"#E28F6E" },
+  { key:"uti", label:"UTI", color:"#5FD9A4" },
+  { key:"emg", label:"Emergência", color:"#6FB3E0" },
+  { key:"hc", label:"Home Care", color:"#9FCB6B" },
+  { key:"atz", label:"Atualização", color:"#E8B95C" },
+  { key:"prep", label:"Preparatório", color:"#A79BE0" },
+];
+
+let step = -1;
+let answers = new Array(QUESTIONS.length).fill(null);
+let situationalChoice = new Array(QUESTIONS.length).fill(null);
+let candidateName = '';
+let candidatePhone = '';
 
 const card = document.getElementById('card');
-const ecgStrip = document.getElementById('ecgStrip');
 const mCurrent = document.getElementById('mCurrent');
-const mBpm = document.getElementById('mBpm');
+const mAvg = document.getElementById('mAvg');
 
-// wave paths
-const PATH_FLAT = "M0 23 L40 23";
-const PATH_BEAT = "M0 23 L10 23 L14 8 L18 38 L22 14 L26 23 L40 23";
-const PATH_DIP  = "M0 23 L10 23 L16 30 L22 12 L28 30 L40 23";
-
-function buildEcg(){
-  ecgStrip.innerHTML = '';
-  QUESTIONS.forEach((_, i) => {
-    const div = document.createElement('div');
-    div.className = 'blip';
-    div.id = 'blip' + i;
-    div.innerHTML = `<svg viewBox="0 0 40 46" preserveAspectRatio="none"><path d="${PATH_FLAT}"/></svg>`;
-    ecgStrip.appendChild(div);
-  });
+function tierClass(v){
+  if(v <= 3) return 'low';
+  if(v <= 7) return 'mid';
+  return 'high';
 }
-buildEcg();
+function tierColor(v){
+  if(v <= 3) return 'var(--alert)';
+  if(v <= 7) return 'var(--gold)';
+  return 'var(--pulse)';
+}
 
 function updateMonitor(){
   const shown = Math.max(step, 0);
-  mCurrent.textContent = String(Math.min(shown, 15)).padStart(2,'0');
-  const answeredCount = answers.filter(a => a !== null).length;
-  const correctCount = answers.filter(a => a && a.correct).length;
-  const bpm = 60 + correctCount * 3;
-  mBpm.textContent = bpm;
+  mCurrent.textContent = String(Math.min(shown, QUESTIONS.length)).padStart(2,'0');
+  const answeredMain = answers.filter((a,i) => a !== null && !QUESTIONS[i].isContext && QUESTIONS[i].type !== 'situational');
+  const avg = answeredMain.length ? (answeredMain.reduce((s,a)=>s+a,0)/answeredMain.length) : null;
+  mAvg.textContent = avg === null ? '—' : (Math.round(avg*10)/10);
 
-  QUESTIONS.forEach((_, i) => {
-    const el = document.getElementById('blip' + i);
-    el.classList.remove('current','correct','incorrect');
-    const path = el.querySelector('path');
-    if(answers[i]){
-      if(answers[i].correct){ el.classList.add('correct'); path.setAttribute('d', PATH_BEAT); }
-      else { el.classList.add('incorrect'); path.setAttribute('d', PATH_DIP); }
-    } else {
-      path.setAttribute('d', PATH_FLAT);
-      if(i === step) el.classList.add('current');
-    }
-  });
+  const answeredCount = answers.filter(a => a !== null).length;
+  const pct = answeredCount / QUESTIONS.length;
+  const clipRect = document.getElementById('brainClipRect');
+  const brainFill = document.getElementById('brainFill');
+  const viewH = 160;
+  clipRect.setAttribute('y', viewH - pct * viewH);
+  clipRect.setAttribute('height', pct * viewH);
+  brainFill.setAttribute('fill', avg === null ? 'var(--pulse)' : tierColor(avg));
+  document.getElementById('brainPct').innerHTML = `Progresso <b>${Math.round(pct*100)}%</b>`;
 }
 
 function renderIntro(){
   card.innerHTML = `
     <div class="intro">
-      <div class="eyebrow">Módulo Master · Microlearning EdApp</div>
-      <h1>O Enfermeiro de Alta Performance</h1>
-      <p>15 checkpoints clínicos, decisões rápidas de A ou B. A cada tela, o seu monitor registra o pulso da sua performance profissional — do propósito na assistência à gestão por indicadores.</p>
+      <div class="eyebrow">Módulo Master · Roda da Afinidade</div>
+      <h1>Avaliação das Afinidades Profissionais em Enfermagem</h1>
+      <p>${QUESTIONS.length} perguntas, 6 áreas — 19 de afinidade (marque no gráfico uma nota de 0 a 10) e 6 cenários situacionais (escolha a alternativa que mais representa sua atitude na prática).</p>
+      <div class="field-group">
+        <div>
+          <label>Seu nome</label>
+          <input type="text" id="candidateNameInput" placeholder="Nome completo" value="${candidateName}">
+        </div>
+        <div>
+          <label>Seu WhatsApp</label>
+          <input type="tel" id="candidatePhoneInput" placeholder="(71) 91234-5678" value="${candidatePhone}">
+        </div>
+      </div>
       <div class="meta-row">
-        <span><b>8 min</b> de duração</span>
-        <span><b>15</b> checkpoints</span>
-        <span><b>Gestão</b> e liderança clínica</span>
+        <span><b>6 min</b> de duração</span>
+        <span><b>${QUESTIONS.length}</b> perguntas</span>
+        <span><b>6</b> áreas avaliadas</span>
       </div>
       <div class="nav-row" style="padding-top:0;">
-        <button class="btn" onclick="goNext()">Iniciar avaliação</button>
+        <button class="btn" onclick="startQuiz()">Iniciar avaliação</button>
       </div>
     </div>`;
   updateMonitor();
+}
+
+function startQuiz(){
+  const nameEl = document.getElementById('candidateNameInput');
+  const phoneEl = document.getElementById('candidatePhoneInput');
+  const name = nameEl.value.trim();
+  const phone = phoneEl.value.trim();
+  if(!name || !phone){
+    alert('Preencha seu nome e WhatsApp antes de iniciar — usamos esses dados para enviar seu resultado à equipe.');
+    return;
+  }
+  candidateName = name;
+  candidatePhone = phone;
+  goNext();
 }
 
 function renderQuestion(i){
   const q = QUESTIONS[i];
+
+  if(q.type === 'situational'){
+    const chosenIdx = situationalChoice[i];
+    const opts = q.options.map((opt, oi) => {
+      const selected = chosenIdx === oi;
+      const tier = selected ? tierClass(opt.score) : '';
+      return `<button class="opt-btn ${selected ? 'selected '+tier : ''}" onclick="chooseSituational(${i},${oi})">${opt.text}</button>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="q-wrap">
+        <div class="q-eyebrow">${q.areaLabel} · ${q.block}</div>
+        <h2 class="q-title">${q.areaLabel} — cenário situacional</h2>
+        <div class="situ-box"><b>A situação</b>${q.situacao}</div>
+        <p class="q-situation"><b style="color:var(--ink);">${q.questao}</b></p>
+        <div class="opt-list">${opts}</div>
+        <div class="nav-row">
+          <button class="btn" id="nextBtn" ${chosenIdx === null ? 'disabled' : ''} onclick="goNext()">
+            ${i === QUESTIONS.length - 1 ? 'Ver diagnóstico' : 'Próxima pergunta'}
+          </button>
+        </div>
+      </div>`;
+    updateMonitor();
+    return;
+  }
+
   const answered = answers[i];
+  const bars = Array.from({length:11}, (_, v) => {
+    const filled = answered !== null && v <= answered;
+    const tier = filled ? tierClass(answered) : '';
+    const h = 14 + v*7;
+    return `<div class="bar ${filled ? 'filled '+tier : ''}" style="height:${h}px;" onclick="choose(${i},${v})"></div>`;
+  }).join('');
+  const labels = Array.from({length:11}, (_, v) => `<span>${v}</span>`).join('');
+
   card.innerHTML = `
     <div class="q-wrap">
-      <div class="q-eyebrow">${q.eyebrow}</div>
-      <h2 class="q-title">${q.title}</h2>
-      <p class="q-situation"><b style="color:var(--ink-dim); font-weight:600;">Situação:</b> ${q.situation}</p>
-      <div class="options">
-        <button class="opt" id="optA" ${answered ? 'disabled' : ''} onclick="choose(${i},'a')">
-          <span class="tag">A</span><span>${q.a}</span>
-        </button>
-        <button class="opt" id="optB" ${answered ? 'disabled' : ''} onclick="choose(${i},'b')">
-          <span class="tag">B</span><span>${q.b}</span>
-        </button>
+      <div class="q-eyebrow">${q.areaLabel} · Pergunta ${q.block}</div>
+      <h2 class="q-title">${q.areaLabel}</h2>
+      <p class="q-situation">${q.prompt}</p>
+      <div class="scale-wrap">
+        <div class="scale">${bars}</div>
+        <div class="scale-labels">${labels}</div>
+        <div class="scale-readout">Nota selecionada: <b>${answered === null ? '—' : answered}</b></div>
       </div>
-      <div class="feedback" id="fb"></div>
       <div class="nav-row">
-        <button class="btn" id="nextBtn" ${answered ? '' : 'disabled'} onclick="goNext()">
-          ${i === QUESTIONS.length - 1 ? 'Ver diagnóstico' : 'Próximo checkpoint'}
+        <button class="btn" id="nextBtn" ${answered === null ? 'disabled' : ''} onclick="goNext()">
+          ${i === QUESTIONS.length - 1 ? 'Ver diagnóstico' : 'Próxima pergunta'}
         </button>
       </div>
     </div>`;
-
-  if(answered){ paintChoice(i); }
   updateMonitor();
 }
 
-function choose(i, letter){
-  const q = QUESTIONS[i];
-  const isCorrect = (letter === q.correct);
-  answers[i] = { letter, correct: isCorrect };
-  paintChoice(i);
-  document.getElementById('nextBtn').disabled = false;
-  updateMonitor();
+function chooseSituational(i, optionIndex){
+  const opt = QUESTIONS[i].options[optionIndex];
+  answers[i] = opt.score;
+  situationalChoice[i] = optionIndex;
+  renderQuestion(i);
 }
 
-function paintChoice(i){
-  const q = QUESTIONS[i];
-  const chosen = answers[i].letter;
-  const correctLetter = q.correct;
-  const optA = document.getElementById('optA');
-  const optB = document.getElementById('optB');
-  [optA, optB].forEach(o => o.disabled = true);
+function choose(i, value){
+  answers[i] = value;
+  renderQuestion(i);
+}
 
-  const chosenEl = chosen === 'a' ? optA : optB;
-  const otherEl = chosen === 'a' ? optB : optA;
+function computeAreaAverages(){
+  const affSums = {}, affCounts = {}, situScore = {}, situIndex = {};
+  AREA_ORDER.forEach(a => { affSums[a.key] = 0; affCounts[a.key] = 0; situScore[a.key] = null; situIndex[a.key] = null; });
 
-  if(chosen === correctLetter){
-    chosenEl.classList.add('chosen-correct');
-  } else {
-    chosenEl.classList.add('chosen-incorrect');
-    otherEl.classList.add('reveal-correct');
+  QUESTIONS.forEach((q, i) => {
+    if(q.type === 'situational'){
+      if(answers[i] !== null){ situScore[q.area] = answers[i]; situIndex[q.area] = i; }
+      return;
+    }
+    if(q.isContext) return;
+    if(answers[i] !== null){ affSums[q.area] += answers[i]; affCounts[q.area]++; }
+  });
+
+  return AREA_ORDER.map(a => {
+    const afinidade = affCounts[a.key] ? affSums[a.key] / affCounts[a.key] : 0;
+    const situacional = situScore[a.key];
+    const hasSitu = situacional !== null;
+    const reprovado = hasSitu && situacional <= 3;
+    const final = !hasSitu
+      ? afinidade
+      : (reprovado ? situacional : (afinidade * 0.4 + situacional * 0.6));
+    let status;
+    if(!hasSitu) status = 'Aguardando cenário situacional';
+    else if(reprovado) status = 'Mantido (risco assistencial)';
+    else status = tierLabel(final);
+    return { ...a, afinidade, situacional, final, reprovado, status };
+  });
+}
+
+function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
+  const words = text.split(' ');
+  let line = '', curY = y;
+  words.forEach(word => {
+    const test = line + word + ' ';
+    if(ctx.measureText(test).width > maxWidth && line !== ''){
+      ctx.fillText(line.trim(), x, curY);
+      line = word + ' ';
+      curY += lineHeight;
+    } else {
+      line = test;
+    }
+  });
+  ctx.fillText(line.trim(), x, curY);
+  return curY;
+}
+
+async function generateStoryImage(){
+  if(document.fonts && document.fonts.ready){ await document.fonts.ready; }
+
+  const W = 1080, H = 1920;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#123049');
+  bg.addColorStop(0.55, '#0E2233');
+  bg.addColorStop(1, '#091622');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = '#5FD9A4';
+  ctx.font = '600 26px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('MÓDULO MASTER · RODA DA AFINIDADE', W/2, 130);
+
+  ctx.fillStyle = '#EAF2F5';
+  ctx.font = '600 56px Fraunces, serif';
+  wrapCanvasText(ctx, 'Roda da Afinidade Profissional em Enfermagem', W/2, 210, 860, 66);
+
+  const areaScoresOrdered = computeAreaAverages();
+  const top = [...areaScoresOrdered].sort((a,b) => b.final - a.final)[0];
+
+  const cx = W/2, cy = 940, rInner = 90, rMax = 500;
+  function polarPt(r, deg){ const rad = (deg-90)*Math.PI/180; return [cx + r*Math.cos(rad), cy + r*Math.sin(rad)]; }
+
+  ctx.strokeStyle = 'rgba(234,242,245,0.15)';
+  ctx.lineWidth = 2;
+  [2,4,6,8,10].forEach(score => {
+    const r = rInner + (score/10) * (rMax - rInner);
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+  });
+
+  areaScoresOrdered.forEach((a, i) => {
+    const start = i*60, end = start+60;
+    const r = Math.max(rInner+10, rInner + (a.final/10) * (rMax - rInner));
+    ctx.beginPath();
+    let [x0,y0] = polarPt(rInner, start);
+    ctx.moveTo(x0, y0);
+    const steps = 30;
+    for(let s=0; s<=steps; s++){
+      const d = start + (end-start)*s/steps;
+      const [x,y] = polarPt(r, d);
+      ctx.lineTo(x, y);
+    }
+    for(let s=steps; s>=0; s--){
+      const d = start + (end-start)*s/steps;
+      const [x,y] = polarPt(rInner, d);
+      ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.globalAlpha = a.reprovado ? 0.5 : 0.88;
+    ctx.fillStyle = a.color;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = '#091622';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    const [lx, ly] = polarPt(rMax + 78, start + 30);
+    ctx.fillStyle = '#93AFC2';
+    ctx.font = '500 26px "IBM Plex Sans", sans-serif';
+    ctx.fillText(a.label, lx, ly - 8);
+    ctx.fillStyle = a.reprovado ? '#FF8B66' : a.color;
+    ctx.font = '700 32px "IBM Plex Mono", monospace';
+    ctx.fillText(String(Math.round(a.final*10)/10), lx, ly + 30);
+  });
+
+  ctx.beginPath(); ctx.arc(cx, cy, rInner, 0, Math.PI*2);
+  ctx.fillStyle = '#091622'; ctx.fill();
+  ctx.strokeStyle = 'rgba(234,242,245,0.25)'; ctx.lineWidth = 2; ctx.stroke();
+
+  ctx.fillStyle = '#E8B95C';
+  ctx.font = '700 42px Fraunces, serif';
+  ctx.fillText(`Maior afinidade: ${top.label}`, W/2, cy + rMax + 175);
+  ctx.fillStyle = '#EAF2F5';
+  ctx.font = '500 30px "IBM Plex Mono", monospace';
+  ctx.fillText(`${Math.round(top.final*10)/10} / 10`, W/2, cy + rMax + 220);
+
+  ctx.fillStyle = '#5D7C90';
+  ctx.font = '500 26px "IBM Plex Mono", monospace';
+  ctx.fillText('@enfermagemirmadulce  ·  @dulce.agenciamatriz21', W/2, H - 80);
+
+  return new Promise(resolve => canvas.toBlob(blob => resolve(blob), 'image/png', 0.95));
+}
+
+async function downloadStoryImage(){
+  const blob = await generateStoryImage();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'roda-afinidade-resultado.png';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function shareStoryImage(){
+  const btn = document.getElementById('shareBtn');
+  if(btn){ btn.disabled = true; btn.textContent = 'Gerando imagem…'; }
+  let sharedOk = false;
+  try{
+    const blob = await generateStoryImage();
+    const file = new File([blob], 'roda-afinidade-resultado.png', { type: 'image/png' });
+    if(navigator.canShare && navigator.canShare({ files: [file] })){
+      // dispara o compartilhamento nos Stories enquanto a permissão do clique ainda está ativa
+      await navigator.share({
+        files: [file],
+        title: 'Roda da Afinidade Profissional em Enfermagem',
+        text: SHARE_CAPTION
+      });
+      sharedOk = true;
+    } else {
+      await downloadStoryImage();
+      sharedOk = true;
+      alert('Seu navegador não permite compartilhamento direto. A imagem foi baixada — abra o Instagram e poste manualmente nos Stories, marcando @enfermagemirmadulce e @dulce.agenciamatriz21.');
+    }
+  } catch(e){
+    // AbortError = o próprio candidato cancelou o menu de compartilhamento; qualquer outro erro cai no fallback
+    if(e && e.name !== 'AbortError'){
+      try{ await downloadStoryImage(); }catch(_){}
+    }
+  } finally {
+    if(btn){ btn.disabled = false; btn.textContent = '📲 Compartilhar nos Stories'; }
+    // abre o WhatsApp da equipe por último, já com a permissão do compartilhamento livre
+    sendWhatsAppReport();
+  }
+}
+
+const SHARE_CAPTION = "Acabei de descobrir minha afinidade em enfermagem! 🩺✨ Faça o teste você também 👉 @enfermagemirmadulce @dulce.agenciamatriz21";
+
+async function copyCaption(){
+  const el = document.getElementById('copyBtn');
+  try{
+    await navigator.clipboard.writeText(SHARE_CAPTION);
+    if(el){ el.textContent = 'Copiado ✓'; setTimeout(() => { el.textContent = '📋 Copiar legenda'; }, 1800); }
+  }catch(e){
+    if(el){ el.textContent = 'Selecione o texto acima'; setTimeout(() => { el.textContent = '📋 Copiar legenda'; }, 1800); }
+  }
+}
+
+const TEAM_WHATSAPP = "5571991747744";
+
+function buildFullReportText(){
+  const areaScoresOrdered = computeAreaAverages();
+  const areaScores = [...areaScoresOrdered].sort((a,b) => b.final - a.final);
+  const top = areaScores[0];
+
+  const lines = [];
+  lines.push('📋 *Roda da Afinidade — Resultado individual*');
+  lines.push(`🗓️ ${new Date().toLocaleString('pt-BR')}`);
+  lines.push(`👤 Candidato: *${candidateName || '—'}*`);
+  lines.push(`📞 WhatsApp do candidato: *${candidatePhone || '—'}*`);
+  lines.push('');
+  lines.push('*Respostas por questão:*');
+
+  let currentArea = null;
+  QUESTIONS.forEach((q, i) => {
+    if(q.areaLabel !== currentArea){
+      currentArea = q.areaLabel;
+      lines.push(`\n*${q.areaLabel}*`);
+    }
+    if(q.type === 'situational'){
+      const oi = situationalChoice[i];
+      const val = answers[i] === null ? '–' : answers[i];
+      const chosen = oi === null ? 'não respondido' : q.options[oi].text;
+      lines.push(`Cenário situacional (*${val}/10*): ${chosen}`);
+    } else {
+      const val = answers[i] === null ? '–' : answers[i];
+      const short = q.prompt.length > 60 ? q.prompt.slice(0, 60) + '…' : q.prompt;
+      lines.push(`${q.block}${q.isContext ? ' (contexto)' : ''}: *${val}/10* — ${short}`);
+    }
+  });
+
+  lines.push('');
+  lines.push('*Resultado por área (Afinidade 40% + Situacional 60%):*');
+  areaScores.forEach(a => {
+    const finalTxt = a.reprovado ? `*MANTIDO*` : `*${Math.round(a.final*10)/10}/10*`;
+    lines.push(`${a.label}: afinidade ${Math.round(a.afinidade*10)/10}/10, situacional ${a.situacional === null ? '–' : Math.round(a.situacional*10)/10+'/10'} → ${finalTxt} (${a.status})`);
+  });
+
+  lines.push('');
+  lines.push(top.reprovado
+    ? `⚠️ Nenhuma área com escore final aprovado — maior pontuação foi *${top.label}*, mas mantida por risco assistencial no cenário situacional.`
+    : `🏆 Maior afinidade: *${top.label}* (${Math.round(top.final*10)/10}/10) — ${top.status}`);
+
+  return lines.join('\n');
+}
+
+function sendWhatsAppReport(){
+  const text = buildFullReportText();
+  const url = `https://wa.me/${TEAM_WHATSAPP}?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+}
+
+function tierLabel(v){
+  if(v >= 8) return 'Alta aderência';
+  if(v >= 5) return 'Aderência moderada';
+  return 'Baixa aderência';
+}
+
+function buildWheelSVG(areaScoresOrdered){
+  const cx = 150, cy = 150, rInner = 16, rMax = 118;
+  const step60 = 60;
+
+  function polarPt(r, deg){
+    const rad = (deg - 90) * Math.PI / 180;
+    return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+  }
+  function wedgePath(r, startDeg, endDeg){
+    const [xIS, yIS] = polarPt(rInner, startDeg);
+    const [xIE, yIE] = polarPt(rInner, endDeg);
+    const [xOS, yOS] = polarPt(r, startDeg);
+    const [xOE, yOE] = polarPt(r, endDeg);
+    return `M ${xIS} ${yIS} L ${xOS} ${yOS} A ${r} ${r} 0 0 1 ${xOE} ${yOE} L ${xIE} ${yIE} A ${rInner} ${rInner} 0 0 0 ${xIS} ${yIS} Z`;
   }
 
-  const fb = document.getElementById('fb');
-  const isCorrect = chosen === correctLetter;
-  fb.className = 'feedback show ' + (isCorrect ? 'pos' : 'neg');
-  fb.innerHTML = `<b>${isCorrect ? '✅ Certo' : '❌ Ponto de atenção'}</b> — ${isCorrect ? (chosen==='a' ? q.fbA : q.fbB) : (chosen==='a' ? q.fbA : q.fbB)}`;
-  // note: fbA/fbB already correspond to option A / B content authored above
+  let grid = '';
+  [2,4,6,8,10].forEach(score => {
+    const r = rInner + (score/10) * (rMax - rInner);
+    grid += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--grid)" stroke-width="1" opacity="0.6"/>`;
+  });
+  let spokes = '';
+  for(let i=0;i<6;i++){
+    const [x,y] = polarPt(rMax + 6, i*step60);
+    spokes += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--grid)" stroke-width="1" opacity="0.6"/>`;
+  }
+
+  let wedges = '';
+  let labels = '';
+  areaScoresOrdered.forEach((a, i) => {
+    const start = i * step60, end = start + step60;
+    const r = rInner + (a.final/10) * (rMax - rInner);
+    const opacity = a.reprovado ? 0.45 : 0.88;
+    wedges += `<path d="${wedgePath(Math.max(r, rInner+2), start, end)}" fill="${a.color}" opacity="${opacity}" stroke="var(--bg-deep)" stroke-width="1.5"/>`;
+    const [lx, ly] = polarPt(rMax + 30, start + step60/2);
+    labels += `<text x="${lx}" y="${ly - 6}" text-anchor="middle" font-size="10.5" fill="var(--ink-dim)" font-family="IBM Plex Sans, sans-serif">${a.label}</text>`;
+    labels += `<text x="${lx}" y="${ly + 9}" text-anchor="middle" font-size="12" font-weight="700" fill="${a.reprovado ? 'var(--alert)' : a.color}" font-family="IBM Plex Mono, monospace">${a.reprovado ? '✕' : Math.round(a.final*10)/10}</text>`;
+  });
+
+  return `<svg class="wheel-svg" viewBox="0 0 300 300">
+    ${grid}${spokes}${wedges}
+    <circle cx="${cx}" cy="${cy}" r="${rInner}" fill="var(--bg-deep)" stroke="var(--grid)" stroke-width="1"/>
+    ${labels}
+  </svg>`;
 }
 
 function renderResult(){
-  const correctCount = answers.filter(a => a.correct).length;
-  let profile, next;
-  if(correctCount >= 12){
-    profile = "Maestro da Assistência (Alta Performance)";
-    next = "Mantenha a cadência de estudos e comece a mentorar colegas menos experientes. Você é o pilar estratégico da unidade.";
-  } else if(correctCount >= 8){
-    profile = "Clínico Sênior (Média Performance)";
-    next = "Ótimo domínio técnico, mas a execução falha na gestão ou no planejamento. Foco em ferramentas de delegação e leitura de indicadores.";
+  const areaScoresOrdered = computeAreaAverages();
+  const areaScores = [...areaScoresOrdered].sort((a,b) => b.final - a.final);
+  const top = areaScores[0];
+
+  let invite;
+  if(top.reprovado){
+    invite = `Nenhuma área foi aprovada — mesmo a maior pontuação (<b style="color:var(--gold)">${top.label}</b>) foi mantida por risco assistencial na resposta ao cenário situacional. Recomenda-se reencaminhar para o módulo Preparatório.`;
+  } else if(top.final >= 8){
+    invite = `Escore de alta aderência em <b style="color:var(--gold)">${top.label}</b>: candidato qualificado para convite ao Encontro Presencial.`;
+  } else if(top.final >= 5){
+    invite = `Aderência moderada em <b style="color:var(--gold)">${top.label}</b>: recomenda-se uma conversa adicional antes do convite.`;
   } else {
-    profile = "Reativo (Oportunidade de Crescimento)";
-    next = "O operacional está sugando a sua energia. Reestruture a forma como planeja o plantão e assuma protagonismo na comunicação.";
+    invite = `Nenhuma área atingiu aderência alta ou moderada consistente — reavaliar perfil ou reencaminhar para o módulo Preparatório.`;
   }
 
-  const reviewRows = QUESTIONS.map((q,i) => {
-    const ok = answers[i].correct;
-    return `<div class="review-item ${ok?'ok':'no'}">
-      <span class="dot"></span>
-      <span><b style="color:var(--ink-dim)">${i+1}.</b> <span class="txt">${q.title}</span></span>
-    </div>`;
+  const rows = areaScores.map((a, idx) => {
+    const pct = (a.final / 10) * 100;
+    const valueLabel = a.reprovado ? 'MAN' : Math.round(a.final*10)/10;
+    return `
+      <div class="area-row ${idx === 0 && !a.reprovado ? 'top' : ''}">
+        <span class="area-label">${a.label}</span>
+        <div class="area-track"><div class="fill" style="width:${pct}%; background:${a.reprovado ? 'var(--alert)' : a.color};"></div></div>
+        <span class="area-value" style="${a.reprovado ? 'color:var(--alert);' : ''}">${valueLabel}</span>
+      </div>
+      <div style="font-size:11px; color:var(--ink-faint); margin:-4px 0 4px 0; padding-left:2px;">
+        Afinidade ${Math.round(a.afinidade*10)/10}/10 · Situacional ${a.situacional === null ? '–' : Math.round(a.situacional*10)/10+'/10'} · ${a.status}
+      </div>`;
   }).join('');
+
+  const legend = AREA_ORDER.map(a =>
+    `<span class="wheel-legend-item"><span class="wheel-legend-dot" style="background:${a.color};"></span>${a.label}</span>`
+  ).join('');
 
   card.innerHTML = `
     <div class="result">
       <div class="result-head">
         <span>Diagnóstico final</span>
-        <span>Autoavaliação</span>
-      </div>
-      <div class="result-score">
-        <span class="big">${correctCount}</span>
-        <span class="of">/ 15 acertos</span>
+        <span>Roda da afinidade</span>
       </div>
       <div>
-        <p class="profile-name">${profile}</p>
+        <p class="profile-name">${top.reprovado ? 'Nenhuma área aprovada' : 'Maior afinidade: ' + top.label}</p>
       </div>
-      <p class="profile-next"><b style="font-family:'IBM Plex Mono',monospace; color:var(--gold);">PRÓXIMOS PASSOS</b><br>${next}</p>
-      <button class="toggle-review" onclick="toggleReview()">Ver leitura checkpoint a checkpoint ▾</button>
-      <div class="review-list" id="reviewList">${reviewRows}</div>
+      <div class="wheel-wrap">${buildWheelSVG(areaScoresOrdered)}</div>
+      <div class="wheel-legend">${legend}</div>
+      <div class="area-chart">${rows}</div>
+      <span class="xp-badge">✨ Roda concluída</span>
+      <p class="profile-next"><b style="font-family:'IBM Plex Mono',monospace; color:var(--gold);">PRÓXIMOS PASSOS</b><br>${invite}</p>
+      <div class="share-hint">
+        📲 Compartilhe seu resultado no Stories e marque <b>@enfermagemirmadulce</b> e <b>@dulce.agenciamatriz21</b> — o Instagram só reconhece a marcação se você digitar o @ dentro do próprio app, então copie a legenda abaixo e cole ao publicar. Dessa forma, o candidato participa de descontos. Para validar, envie um print do seu Stories já publicado (com a marcação visível) para o mesmo WhatsApp da equipe usado no botão abaixo.
+        <div class="caption-box">
+          <span>${SHARE_CAPTION}</span>
+          <button class="copy-btn" id="copyBtn" onclick="copyCaption()">📋 Copiar legenda</button>
+        </div>
+      </div>
       <div class="nav-row">
         <button class="btn ghost" onclick="restart()">Refazer avaliação</button>
+        <button class="btn btn-whats" onclick="sendWhatsAppReport()">📤 Enviar só para a equipe</button>
+        <button class="btn btn-insta" id="shareBtn" onclick="shareStoryImage()">📲 Compartilhar nos Stories + enviar à equipe</button>
       </div>
     </div>`;
   updateMonitor();
-}
-
-function toggleReview(){
-  document.getElementById('reviewList').classList.toggle('open');
 }
 
 function goNext(){
@@ -669,7 +894,9 @@ function goNext(){
 function restart(){
   step = -1;
   answers = new Array(QUESTIONS.length).fill(null);
-  buildEcg();
+  situationalChoice = new Array(QUESTIONS.length).fill(null);
+  candidateName = '';
+  candidatePhone = '';
   renderIntro();
 }
 
