@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Enfermeiro de Alta Performance — Módulo Microlearning</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #0E2233;
+    --bg-deep: #091622;
+    --elev: #16324A;
+    --elev-2: #1C3C58;
+    --grid: #24445F;
+    --ink: #EAF2F5;
+    --ink-dim: #93AFC2;
+    --ink-faint: #5D7C90;
+    --pulse: #5FD9A4;
+    --pulse-dim: #2E5C4C;
+    --alert: #FF8B66;
+    --alert-dim: #5C3B2E;
+    --gold: #E8B95C;
+    --radius: 14px;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(ellipse at top, #123049 0%, var(--bg) 45%, var(--bg-deep) 100%);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:28px 16px 60px;
+  }
+
+  .app{
+    width:100%;
+    max-width:640px;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+
+  /* ---------- MONITOR HEADER ---------- */
+  .monitor{
+    background:var(--bg-deep);
+    border:1px solid var(--grid);
+    border-radius:var(--radius) var(--radius) 0 0;
+    padding:16px 18px 12px;
+    position:relative;
+    overflow:hidden;
+  }
+  .monitor::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(95,217,164,0.045) 0 1px, transparent 1px 22px),
+      repeating-linear-gradient(90deg, rgba(95,217,164,0.045) 0 1px, transparent 1px 22px);
+    pointer-events:none;
+  }
+  .monitor-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--ink-faint);
+    position:relative; z-index:1;
+    margin-bottom:10px;
+    flex-wrap:wrap; gap:6px;
+  }
+  .monitor-row b{ color:var(--pulse); font-weight:600; }
+  .vitals{
+    display:flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ink);
+  }
+  .vitals .num{ font-size:15px; font-weight:600; color:var(--gold); }
+
+  .ecg-strip{
+    position:relative; z-index:1;
+    display:flex; gap:3px; align-items:flex-end;
+    height:46px;
+  }
+  .blip{
+    flex:1;
+    height:100%;
+    display:flex; align-items:center;
+    position:relative;
+  }
+  .blip svg{ width:100%; height:100%; overflow:visible; }
+  .blip path{
+    fill:none;
+    stroke:var(--ink-faint);
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:0.35;
+    transition:stroke 0.4s ease, opacity 0.4s ease;
+  }
+  .blip.correct path{ stroke:var(--pulse); opacity:1; filter:drop-shadow(0 0 4px rgba(95,217,164,0.6)); }
+  .blip.incorrect path{ stroke:var(--alert); opacity:1; filter:drop-shadow(0 0 4px rgba(255,139,102,0.55)); }
+  .blip.current path{ stroke:var(--ink); opacity:0.9; animation:sweep 1.6s ease-in-out infinite; }
+  @keyframes sweep{ 0%,100%{opacity:0.45;} 50%{opacity:1;} }
+
+  /* ---------- CARD ---------- */
+  .card{
+    background:var(--elev);
+    border:1px solid var(--grid);
+    border-top:none;
+    border-radius:0 0 var(--radius) var(--radius);
+    padding:28px 24px 26px;
+    min-height:420px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- INTRO ---------- */
+  .intro{ text-align:left; display:flex; flex-direction:column; gap:18px; flex:1; justify-content:center; }
+  .intro .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--pulse);
+  }
+  .intro h1{
+    font-family:'Fraunces', serif;
+    font-size:clamp(28px, 6vw, 38px);
+    line-height:1.08;
+    font-weight:600;
+    margin:0;
+    color:var(--ink);
+  }
+  .intro p{
+    color:var(--ink-dim);
+    font-size:15px;
+    line-height:1.6;
+    margin:0;
+    max-width:46ch;
+  }
+  .meta-row{
+    display:flex; gap:18px; flex-wrap:wrap;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; color:var(--ink-faint);
+    border-top:1px solid var(--grid);
+    border-bottom:1px solid var(--grid);
+    padding:12px 0;
+  }
+  .meta-row span b{ color:var(--ink-dim); font-weight:600; }
+
+  /* ---------- QUESTION ---------- */
+  .q-wrap{ display:flex; flex-direction:column; gap:16px; flex:1; animation:fadeIn 0.4s ease; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .q-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .q-title{
+    font-family:'Fraunces', serif;
+    font-size:22px; font-weight:600;
+    color:var(--ink);
+    margin:0;
+  }
+  .q-situation{
+    color:var(--ink-dim);
+    font-size:14.5px;
+    line-height:1.55;
+    margin:0;
+  }
+
+  .options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:4px;
+  }
+  @media (max-width:480px){ .options{ grid-template-columns:1fr; } }
+
+  .opt{
+    background:var(--bg-deep);
+    border:1px solid var(--grid);
+    border-radius:10px;
+    padding:16px 14px;
+    text-align:left;
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    line-height:1.45;
+    cursor:pointer;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    transition:border-color 0.2s ease, transform 0.15s ease, background 0.2s ease;
+  }
+  .opt:hover:not(:disabled){ border-color:var(--pulse-dim); transform:translateY(-1px); }
+  .opt:disabled{ cursor:default; }
+  .opt .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:12px;
+    color:var(--ink-faint);
+    flex-shrink:0;
+    border:1px solid var(--grid);
+    border-radius:5px;
+    width:22px; height:22px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .opt.chosen-correct{ border-color:var(--pulse); background:linear-gradient(180deg, rgba(95,217,164,0.10), transparent); }
+  .opt.chosen-correct .tag{ background:var(--pulse); color:var(--bg-deep); border-color:var(--pulse); }
+  .opt.chosen-incorrect{ border-color:var(--alert); background:linear-gradient(180deg, rgba(255,139,102,0.10), transparent); }
+  .opt.chosen-incorrect .tag{ background:var(--alert); color:var(--bg-deep); border-color:var(--alert); }
+  .opt.reveal-correct:not(.chosen-correct){ border-color:var(--pulse-dim); opacity:0.75; }
+
+  .feedback{
+    margin-top:2px;
+    padding:14px 16px;
+    border-radius:10px;
+    font-size:13.5px;
+    line-height:1.55;
+    display:none;
+    animation:slideDown 0.35s ease;
+  }
+  @keyframes slideDown{ from{opacity:0; transform:translateY(-6px);} to{opacity:1; transform:translateY(0);} }
+  .feedback.show{ display:block; }
+  .feedback.pos{ background:rgba(95,217,164,0.09); border:1px solid var(--pulse-dim); color:#CDEFDF; }
+  .feedback.neg{ background:rgba(255,139,102,0.09); border:1px solid var(--alert-dim); color:#FFDCCB; }
+  .feedback b{ font-family:'IBM Plex Mono', monospace; letter-spacing:0.04em; }
+
+  .nav-row{
+    margin-top:auto;
+    padding-top:18px;
+    display:flex;
+    justify-content:flex-end;
+  }
+
+  .btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px; letter-spacing:0.05em; text-transform:uppercase;
+    font-weight:600;
+    background:var(--pulse);
+    color:var(--bg-deep);
+    border:none;
+    border-radius:8px;
+    padding:12px 22px;
+    cursor:pointer;
+    transition:filter 0.15s ease, transform 0.15s ease;
+  }
+  .btn:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+  .btn.ghost{
+    background:transparent;
+    color:var(--ink-dim);
+    border:1px solid var(--grid);
+  }
+  .btn:disabled{ opacity:0.35; cursor:not-allowed; transform:none; }
+
+  /* ---------- RESULT ---------- */
+  .result{ display:flex; flex-direction:column; gap:20px; flex:1; animation:fadeIn 0.5s ease; }
+  .result-head{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ink-faint);
+    border-bottom:1px dashed var(--grid);
+    padding-bottom:14px;
+    display:flex; justify-content:space-between;
+  }
+  .result-score{
+    display:flex; align-items:baseline; gap:14px;
+  }
+  .result-score .big{
+    font-family:'Fraunces', serif;
+    font-size:64px; font-weight:700;
+    color:var(--gold);
+    line-height:1;
+  }
+  .result-score .of{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ink-faint);
+    font-size:14px;
+  }
+  .profile-name{
+    font-family:'Fraunces', serif;
+    font-size:24px; font-weight:600;
+    color:var(--ink);
+    margin:0;
+  }
+  .profile-next{
+    color:var(--ink-dim);
+    font-size:14.5px;
+    line-height:1.6;
+    margin:0;
+    background:var(--bg-deep);
+    border-left:3px solid var(--gold);
+    padding:14px 16px;
+    border-radius:0 8px 8px 0;
+  }
+  .review-list{
+    display:flex; flex-direction:column; gap:6px;
+    max-height:0; overflow:hidden; transition:max-height 0.4s ease;
+  }
+  .review-list.open{ max-height:900px; }
+  .review-item{
+    display:flex; gap:10px; align-items:flex-start;
+    font-size:12.5px; color:var(--ink-faint);
+    font-family:'IBM Plex Mono', monospace;
+    padding:6px 0;
+    border-bottom:1px solid var(--grid);
+  }
+  .review-item .dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+  .review-item.ok .dot{ background:var(--pulse); }
+  .review-item.no .dot{ background:var(--alert); }
+  .review-item span.txt{ color:var(--ink-dim); font-family:'IBM Plex Sans', sans-serif; }
+
+  .toggle-review{
+    background:none; border:none; color:var(--ink-faint);
+    font-family:'IBM Plex Mono', monospace; font-size:12px;
+    text-decoration:underline; cursor:pointer; text-align:left; padding:0;
+    width:fit-content;
+  }
+
+  .foot{
+    text-align:center;
+    color:var(--ink-faint);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    margin-top:14px;
+    letter-spacing:0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="monitor" id="monitor">
+    <div class="monitor-row">
+      <span>Registro <b id="mCurrent">00</b> / 15</span>
+      <div class="vitals">Pulso clínico <span class="num" id="mBpm">60</span> bpm</div>
+    </div>
+    <div class="ecg-strip" id="ecgStrip"></div>
+  </div>
+
+  <div class="card" id="card"></div>
+
+  <div class="foot">MICROLEARNING · GESTÃO E LIDERANÇA CLÍNICA</div>
+</div>
+
+<script>
+const QUESTIONS = [
+  { eyebrow:"Tela 1 · Propósito na Assistência",
+    title:"O Propósito na Assistência",
+    situation:"O profissional de alta performance tem clareza da sua contribuição. Como você enxerga o seu impacto para a organização e para a saúde dos pacientes?",
+    a:"Tenho o meu propósito e as metas de contribuição que desejo realizar no setor definidos por escrito.",
+    b:"Sei que contribuo salvando vidas, mas tenho isso apenas na cabeça; foco mais em resolver as urgências do plantão.",
+    correct:"a",
+    fbA:"Excelente! A clareza documentada garante que você não perca o direcionamento estratégico, mesmo nos dias mais caóticos.",
+    fbB:"O foco exclusivo na urgência transforma você num \"apagador de incêndios\"." },
+
+  { eyebrow:"Tela 2 · O Plano de Voo (Carreira)",
+    title:"O Plano de Voo",
+    situation:"Onde você deseja morar, qual a renda desejada e que tipo de especialização quer ter?",
+    a:"Deixo a rotina me guiar. O importante é ter o emprego e dar conta da escala.",
+    b:"Tenho um plano de carreira detalhado e escrito, mapeando onde estou e onde quero chegar na enfermagem.",
+    correct:"b",
+    fbA:"Sem uma visão de futuro, a estagnação profissional é quase certa.",
+    fbB:"Visão de mestre! Quem não planeja o seu próprio cenário, acaba fazendo parte do cenário dos outros." },
+
+  { eyebrow:"Tela 3 · Metas de Curto Prazo",
+    title:"Metas de Curto Prazo",
+    situation:"Em relação aos objetivos para a sua unidade e para você no próximo ano:",
+    a:"Sei que precisamos melhorar processos, mas não tenho nenhuma meta formalizada para os próximos 12 meses.",
+    b:"Tenho metas claras e registradas (ex: reduzir infecções em 10%, concluir a pós-graduação).",
+    correct:"b",
+    fbA:"Ficar apenas no campo das ideias não gera mudança.",
+    fbB:"Isso é foco! Metas escritas e com prazo são o motor da alta performance." },
+
+  { eyebrow:"Tela 4 · Melhoria Contínua",
+    title:"Melhoria Contínua",
+    situation:"Os pacientes e a gestão hospitalar apresentam novas necessidades. Como você adapta o seu trabalho?",
+    a:"Mudo as minhas atitudes e otimizo os processos do setor para entregar uma assistência mais segura e satisfatória.",
+    b:"Continuo fazendo o meu trabalho da forma que sempre fiz, até que a coordenação exija uma mudança.",
+    correct:"a",
+    fbA:"Empatia e proatividade! Você entende que a assistência deve evoluir conforme a necessidade de quem a recebe.",
+    fbB:"A postura reativa engessa o setor e ignora a experiência do paciente." },
+
+  { eyebrow:"Tela 5 · Comunicação Multidisciplinar",
+    title:"Comunicação Multidisciplinar",
+    situation:"Durante a passagem de plantão ou num round clínico com os médicos:",
+    a:"Exponho meu diagnóstico de enfermagem com firmeza, mas escuto ativamente as contribuições dos colegas.",
+    b:"Falo mais do que ouço para impor a rotina, ou evito expor as minhas ideias para não gerar discordância.",
+    correct:"a",
+    fbA:"Comunicação assertiva! O equilíbrio perfeito para construir confiança na equipe multidisciplinar.",
+    fbB:"Os extremos (agressividade ou passividade) quebram a segurança do paciente." },
+
+  { eyebrow:"Tela 6 · Educação Continuada",
+    title:"Educação Continuada",
+    situation:"A ciência da saúde avança rapidamente. Como é a sua busca por novos conhecimentos?",
+    a:"Tenho períodos programados na minha rotina (dia/ano) para estudar, ler artigos científicos e fazer cursos.",
+    b:"Leio e busco me atualizar apenas quando sobra algum tempo livre no hospital ou em casa.",
+    correct:"a",
+    fbA:"Hábito de excelência. A atualização intencional mantém você como referência técnica.",
+    fbB:"A \"falta de tempo\" é o maior inimigo da inovação. O que não é priorizado na agenda, não acontece." },
+
+  { eyebrow:"Tela 7 · Prática Baseada em Evidências",
+    title:"Prática Baseada em Evidências",
+    situation:"Você aprendeu um novo protocolo assistencial em um congresso. Qual o próximo passo?",
+    a:"Só aplico quando tenho 100% de certeza que não haverá resistência, ou prefiro não testar.",
+    b:"Coloco o novo conhecimento em prática, verifico os resultados com a equipe e identifico o que funciona ou não.",
+    correct:"b",
+    fbA:"O excesso de cautela e a aversão ao risco paralisam a evolução da unidade.",
+    fbB:"Mentalidade científica pura! Testar, errar rápido e ajustar é a base da inovação em saúde." },
+
+  { eyebrow:"Tela 8 · A Arte de Reger a Equipe",
+    title:"A Arte de Reger a Equipe",
+    situation:"É preciso alinhar técnicos de enfermagem desmotivados em prol de um novo objetivo de qualidade.",
+    a:"Sinto-me realizado ao tomar a iniciativa para alinhar ideias, mediar conflitos e guiar a equipe na mesma direção.",
+    b:"Tenho receio de cobrar posturas e gerar atritos, preferindo focar apenas no meu trabalho burocrático.",
+    correct:"a",
+    fbA:"O verdadeiro Enfermeiro Líder! Você assume o seu papel de maestro da assistência.",
+    fbB:"Abdicar da liderança sobrecarrega você e deixa a equipe à deriva." },
+
+  { eyebrow:"Tela 9 · Resiliência no Cuidado",
+    title:"Resiliência no Cuidado",
+    situation:"A realização de um objetivo crítico do setor está exigindo muito mais esforço do que o previsto.",
+    a:"Esforço-me a cada momento, adaptando estratégias e treinando a equipe até garantir o resultado.",
+    b:"Se a ação for muito difícil ou encontrar muita barreira na equipe, mudo de objetivo ou deixo para lá.",
+    correct:"a",
+    fbA:"Alta Performance exige garra. Você não espera que a cultura de segurança caia do céu.",
+    fbB:"A falta de resiliência impede que barreiras institucionais sejam rompidas." },
+
+  { eyebrow:"Tela 10 · O Mapa do Cuidado (SAE)",
+    title:"O Mapa do Cuidado",
+    situation:"Como você assegura a execução do planejamento terapêutico do seu paciente?",
+    a:"Utilizo a SAE documentada como um autêntico plano de ações para guiar toda a equipe técnica de forma sistêmica.",
+    b:"Sei o que deve ser feito, mas guardo na cabeça ou passo apenas verbalmente pela falta de tempo.",
+    correct:"a",
+    fbA:"Planejamento tático impecável! Transformar intenção em registros salva vidas.",
+    fbB:"Confiar na memória é o primeiro passo para o erro ou a omissão de cuidado." },
+
+  { eyebrow:"Tela 11 · Cultura de Feedback",
+    title:"Cultura de Feedback",
+    situation:"Como você avalia a eficácia do seu trabalho e liderança?",
+    a:"Busco informações ativamente sobre a minha atuação por meios formais (indicadores) e informais (feedback da equipe).",
+    b:"Acredito na minha intuição ou espero que os outros venham me dizer algo de forma espontânea.",
+    correct:"a",
+    fbA:"Maturidade profissional. Você caça os seus próprios pontos cegos.",
+    fbB:"Quem espera por feedback espontâneo geralmente só o recebe quando a situação já virou uma crise." },
+
+  { eyebrow:"Tela 12 · O Raio-X dos Dados",
+    title:"O Raio-X dos Dados",
+    situation:"Como você acompanha as metas (ex: lesões por pressão, absenteísmo) do seu plantão?",
+    a:"Considero os números burocracia; sei que o trabalho foi bem feito se ninguém reclamou e todos foram medicados.",
+    b:"Registro e quantifico os resultados em números e indicadores, usando metas numéricas para balizar o cuidado.",
+    correct:"b",
+    fbA:"\"Feeling\" não gere hospital. O que não se mede, não se gerencia.",
+    fbB:"O olhar do gestor! Você transforma dados assistenciais em inteligência clínica." },
+
+  { eyebrow:"Tela 13 · Auditoria Clínica",
+    title:"Auditoria Clínica",
+    situation:"Ao analisar o desempenho mensal do seu setor:",
+    a:"Sempre comparo o trabalho realizado com os objetivos e metas de qualidade institucionais.",
+    b:"Raramente comparo resultados; acho que cada plantão é único e comparações não ajudam.",
+    correct:"a",
+    fbA:"Auditoria contínua! Você garante que o esforço da equipe está alinhado com o sucesso do hospital.",
+    fbB:"Sem padronização e comparação de métricas, a qualidade da assistência se perde." },
+
+  { eyebrow:"Tela 14 · Agilidade de Correção",
+    title:"Agilidade de Correção (Pivotagem)",
+    situation:"Você implementou uma rotina, mas os resultados mostraram-se ruins ou a equipe está falhando.",
+    a:"Modifico rapidamente a atitude, revejo o processo e busco alternativas melhores sem apego ao erro.",
+    b:"Fico frustrado, justifico a falha por falta de recursos e reluto em mudar a rotina imediatamente.",
+    correct:"a",
+    fbA:"Agilidade estratégica. Alta performance é errar, admitir, corrigir a rota e seguir em frente.",
+    fbB:"A paralisia diante do erro perpetua falhas na segurança do paciente." },
+
+  { eyebrow:"Tela 15 · O Balanço Final",
+    title:"O Balanço Final",
+    situation:"Avaliando a efetividade da sua carreira e projetos até aqui:",
+    a:"Normalmente realizo todos ou a grande maioria dos objetivos que me proponho em um determinado período.",
+    b:"Noto que a maioria das minhas propostas e objetivos não saem do papel ou ficam pela metade.",
+    correct:"a",
+    fbA:"Capacidade máxima de entrega! Você fecha ciclos com sucesso e gera impacto real.",
+    fbB:"Há um gap forte entre a sua intenção clínica e a sua capacidade de execução/gestão de tempo." },
+];
+
+let step = -1; // -1 = intro, 0..14 = questions, 15 = result
+let answers = new Array(QUESTIONS.length).fill(null); // {letter, correct}
+
+const card = document.getElementById('card');
+const ecgStrip = document.getElementById('ecgStrip');
+const mCurrent = document.getElementById('mCurrent');
+const mBpm = document.getElementById('mBpm');
+
+// wave paths
+const PATH_FLAT = "M0 23 L40 23";
+const PATH_BEAT = "M0 23 L10 23 L14 8 L18 38 L22 14 L26 23 L40 23";
+const PATH_DIP  = "M0 23 L10 23 L16 30 L22 12 L28 30 L40 23";
+
+function buildEcg(){
+  ecgStrip.innerHTML = '';
+  QUESTIONS.forEach((_, i) => {
+    const div = document.createElement('div');
+    div.className = 'blip';
+    div.id = 'blip' + i;
+    div.innerHTML = `<svg viewBox="0 0 40 46" preserveAspectRatio="none"><path d="${PATH_FLAT}"/></svg>`;
+    ecgStrip.appendChild(div);
+  });
+}
+buildEcg();
+
+function updateMonitor(){
+  const shown = Math.max(step, 0);
+  mCurrent.textContent = String(Math.min(shown, 15)).padStart(2,'0');
+  const answeredCount = answers.filter(a => a !== null).length;
+  const correctCount = answers.filter(a => a && a.correct).length;
+  const bpm = 60 + correctCount * 3;
+  mBpm.textContent = bpm;
+
+  QUESTIONS.forEach((_, i) => {
+    const el = document.getElementById('blip' + i);
+    el.classList.remove('current','correct','incorrect');
+    const path = el.querySelector('path');
+    if(answers[i]){
+      if(answers[i].correct){ el.classList.add('correct'); path.setAttribute('d', PATH_BEAT); }
+      else { el.classList.add('incorrect'); path.setAttribute('d', PATH_DIP); }
+    } else {
+      path.setAttribute('d', PATH_FLAT);
+      if(i === step) el.classList.add('current');
+    }
+  });
+}
+
+function renderIntro(){
+  card.innerHTML = `
+    <div class="intro">
+      <div class="eyebrow">Módulo Master · Microlearning EdApp</div>
+      <h1>O Enfermeiro de Alta Performance</h1>
+      <p>15 checkpoints clínicos, decisões rápidas de A ou B. A cada tela, o seu monitor registra o pulso da sua performance profissional — do propósito na assistência à gestão por indicadores.</p>
+      <div class="meta-row">
+        <span><b>8 min</b> de duração</span>
+        <span><b>15</b> checkpoints</span>
+        <span><b>Gestão</b> e liderança clínica</span>
+      </div>
+      <div class="nav-row" style="padding-top:0;">
+        <button class="btn" onclick="goNext()">Iniciar avaliação</button>
+      </div>
+    </div>`;
+  updateMonitor();
+}
+
+function renderQuestion(i){
+  const q = QUESTIONS[i];
+  const answered = answers[i];
+  card.innerHTML = `
+    <div class="q-wrap">
+      <div class="q-eyebrow">${q.eyebrow}</div>
+      <h2 class="q-title">${q.title}</h2>
+      <p class="q-situation"><b style="color:var(--ink-dim); font-weight:600;">Situação:</b> ${q.situation}</p>
+      <div class="options">
+        <button class="opt" id="optA" ${answered ? 'disabled' : ''} onclick="choose(${i},'a')">
+          <span class="tag">A</span><span>${q.a}</span>
+        </button>
+        <button class="opt" id="optB" ${answered ? 'disabled' : ''} onclick="choose(${i},'b')">
+          <span class="tag">B</span><span>${q.b}</span>
+        </button>
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="nav-row">
+        <button class="btn" id="nextBtn" ${answered ? '' : 'disabled'} onclick="goNext()">
+          ${i === QUESTIONS.length - 1 ? 'Ver diagnóstico' : 'Próximo checkpoint'}
+        </button>
+      </div>
+    </div>`;
+
+  if(answered){ paintChoice(i); }
+  updateMonitor();
+}
+
+function choose(i, letter){
+  const q = QUESTIONS[i];
+  const isCorrect = (letter === q.correct);
+  answers[i] = { letter, correct: isCorrect };
+  paintChoice(i);
+  document.getElementById('nextBtn').disabled = false;
+  updateMonitor();
+}
+
+function paintChoice(i){
+  const q = QUESTIONS[i];
+  const chosen = answers[i].letter;
+  const correctLetter = q.correct;
+  const optA = document.getElementById('optA');
+  const optB = document.getElementById('optB');
+  [optA, optB].forEach(o => o.disabled = true);
+
+  const chosenEl = chosen === 'a' ? optA : optB;
+  const otherEl = chosen === 'a' ? optB : optA;
+
+  if(chosen === correctLetter){
+    chosenEl.classList.add('chosen-correct');
+  } else {
+    chosenEl.classList.add('chosen-incorrect');
+    otherEl.classList.add('reveal-correct');
+  }
+
+  const fb = document.getElementById('fb');
+  const isCorrect = chosen === correctLetter;
+  fb.className = 'feedback show ' + (isCorrect ? 'pos' : 'neg');
+  fb.innerHTML = `<b>${isCorrect ? '✅ Certo' : '❌ Ponto de atenção'}</b> — ${isCorrect ? (chosen==='a' ? q.fbA : q.fbB) : (chosen==='a' ? q.fbA : q.fbB)}`;
+  // note: fbA/fbB already correspond to option A / B content authored above
+}
+
+function renderResult(){
+  const correctCount = answers.filter(a => a.correct).length;
+  let profile, next;
+  if(correctCount >= 12){
+    profile = "Maestro da Assistência (Alta Performance)";
+    next = "Mantenha a cadência de estudos e comece a mentorar colegas menos experientes. Você é o pilar estratégico da unidade.";
+  } else if(correctCount >= 8){
+    profile = "Clínico Sênior (Média Performance)";
+    next = "Ótimo domínio técnico, mas a execução falha na gestão ou no planejamento. Foco em ferramentas de delegação e leitura de indicadores.";
+  } else {
+    profile = "Reativo (Oportunidade de Crescimento)";
+    next = "O operacional está sugando a sua energia. Reestruture a forma como planeja o plantão e assuma protagonismo na comunicação.";
+  }
+
+  const reviewRows = QUESTIONS.map((q,i) => {
+    const ok = answers[i].correct;
+    return `<div class="review-item ${ok?'ok':'no'}">
+      <span class="dot"></span>
+      <span><b style="color:var(--ink-dim)">${i+1}.</b> <span class="txt">${q.title}</span></span>
+    </div>`;
+  }).join('');
+
+  card.innerHTML = `
+    <div class="result">
+      <div class="result-head">
+        <span>Diagnóstico final</span>
+        <span>Autoavaliação</span>
+      </div>
+      <div class="result-score">
+        <span class="big">${correctCount}</span>
+        <span class="of">/ 15 acertos</span>
+      </div>
+      <div>
+        <p class="profile-name">${profile}</p>
+      </div>
+      <p class="profile-next"><b style="font-family:'IBM Plex Mono',monospace; color:var(--gold);">PRÓXIMOS PASSOS</b><br>${next}</p>
+      <button class="toggle-review" onclick="toggleReview()">Ver leitura checkpoint a checkpoint ▾</button>
+      <div class="review-list" id="reviewList">${reviewRows}</div>
+      <div class="nav-row">
+        <button class="btn ghost" onclick="restart()">Refazer avaliação</button>
+      </div>
+    </div>`;
+  updateMonitor();
+}
+
+function toggleReview(){
+  document.getElementById('reviewList').classList.toggle('open');
+}
+
+function goNext(){
+  step++;
+  if(step >= QUESTIONS.length){ renderResult(); return; }
+  renderQuestion(step);
+}
+
+function restart(){
+  step = -1;
+  answers = new Array(QUESTIONS.length).fill(null);
+  buildEcg();
+  renderIntro();
+}
+
+renderIntro();
+</script>
+</body>
+</html>
